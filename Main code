@@ -1,0 +1,95 @@
+import pandas as pd
+
+# Load the Excel file from Google Drive
+file_path = 'TEST 2023 Median House Prices by County US AND CA (1).xlsx'
+median_prices_df = pd.read_excel(file_path)
+
+# Display the first few rows of the DataFrame to understand its structure
+median_prices_df.head()
+def estimate_mortgage_qualification():
+    """
+    Estimate the mortgage amount qualification based on credit score, yearly income, and down payment.
+    """
+    #This function takes user inout for their:
+      #1. Credit Score
+      #2. Gross Yearly Income
+      #3. Initial Down Payment
+
+    #Define credit score and build logic to catch mistakes
+    credit_score = int(input("How bad is your CS?: "))
+    while credit_score > 900 or credit_score < 300:
+      if credit_score > 900:
+        print("Wow wow cowboy, slowdown there. Give me a value below 900.")
+        credit_score = int(input("How bad is your CS?: "))
+      elif credit_score < 300:
+        print("You are a joke! Go work on your credit score!")
+        credit_score = int(input("How bad is your CS?: "))
+      else:
+        pass
+
+    #Define yearly income and build logic to catch mistakes
+    yearly_income = int(input("What about your annual cash?: "))
+    while yearly_income < 0:
+      print("You can't have a negative income, baka!!!")
+      yearly_income = int(input("What about your annual cash?: "))
+
+    #Define yearly income and build logic to catch mistakes
+    down_payment = int(input("Willing to spare anything upfront?: "))
+    while down_payment < 0:
+      print("You can't have a negative down payment, shtupit!!!")
+      down_payment = int(input("Willing to spare anything upfront?: "))
+
+     # Interest rate based on credit score (Source: FICO as of 11.17)
+    if credit_score >= 760:
+        interest_rate = 0.06839
+    elif 700 <= credit_score < 759:
+        interest_rate = 0.07061
+    elif 680 <= credit_score < 699:
+        interest_rate = 0.07238
+    elif 660 <= credit_score < 679:
+        interest_rate = 0.07452
+    elif 640 <= credit_score < 659:
+        interest_rate = 0.07882
+    else:
+        interest_rate = 0.08428
+
+    # Maximum monthly payment based on income and debt-to-income ratio
+    max_monthly_payment = (yearly_income / 12) * 0.36
+
+    # Mortgage formula calculations
+    monthly_interest_rate = interest_rate / 12
+    loan_amount = 0  # Start with 0 and increase to find the maximum possible loan
+
+    while True:
+        monthly_payment = (loan_amount * monthly_interest_rate) / (1 - (1 + monthly_interest_rate) ** (-12 * 30))
+        if monthly_payment > max_monthly_payment:
+            break
+        loan_amount += 1000
+
+    loan_amount -= 1000
+    total_mortgage = loan_amount + down_payment
+
+    return total_mortgage
+
+def find_closest_median_house_price():
+    """
+    Find the closest match of median house price by county.
+    """
+    #Calling a previosu function, since it is a part of the new function
+    totalloan = estimate_mortgage_qualification()
+    median_prices_df['Difference'] = abs(median_prices_df['Median Home Price Q1 2023'] - totalloan)
+    closest_match = median_prices_df.loc[median_prices_df['Difference'].idxmin()]
+
+    return closest_match['County Name'], closest_match['Median Home Price Q1 2023']
+
+# Example usage
+# Call the function
+result_list = find_closest_median_house_price()
+# Making each variable in the function to be called separately
+countyname = result_list[0]
+medianprice = result_list[1]
+
+# Output
+print(f"\nThe bank might give you around ${totalloan}, but you will have to beg.")
+print(f"You can probably, maybe, tho unlikely afford something in {countyname}, CA.")
+print(f"The median price of the house is around ${medianprice}, tho it's too much for you anyway.")
