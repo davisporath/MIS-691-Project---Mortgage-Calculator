@@ -1,6 +1,6 @@
 import pandas as pd
 
-# Load the Excel file from Google Drive
+# Load the Excel file YOU WILL NEED TO UPDATE FILE_PATH WITH YOUR FILE LOCATION
 file_path = 'TEST 2023 Median House Prices by County US AND CA (1).xlsx'
 median_prices_df = pd.read_excel(file_path)
 
@@ -10,34 +10,35 @@ def estimate_mortgage_qualification():
     """
     Estimate the mortgage amount qualification based on credit score, yearly income, and down payment.
     """
-    #This function takes user inout for their:
+    #This function takes user input for their:
       #1. Credit Score
       #2. Gross Yearly Income
       #3. Initial Down Payment
 
     #Define credit score and build logic to catch mistakes
-    credit_score = int(input("How bad is your CS?: "))
+    credit_score = int(input("How bad is your Credit Score?: "))
     while credit_score > 900 or credit_score < 300:
       if credit_score > 900:
         print("Wow wow cowboy, slowdown there. Give me a value below 900.")
-        credit_score = int(input("How bad is your CS?: "))
+        credit_score = int(input("How bad is your Credit Score?: "))
       elif credit_score < 300:
         print("You are a joke! Go work on your credit score!")
-        credit_score = int(input("How bad is your CS?: "))
+        credit_score = int(input("How bad is your Credit Score?: "))
       else:
         pass
 
     #Define yearly income and build logic to catch mistakes
-    yearly_income = int(input("What about your annual cash?: "))
+    yearly_income = int(input("What about your annual gross income?: "))
     while yearly_income < 0:
-      print("You can't have a negative income, baka!!!")
-      yearly_income = int(input("What about your annual cash?: "))
+      print("You can't have a negative income, shtupit!")
+      yearly_income = int(input("What about your annual gross income?: "))
 
     #Define yearly income and build logic to catch mistakes
-    down_payment = int(input("Willing to spare anything upfront?: "))
+    down_payment = int(input("Willing to spare anything for down payment?: "))
     while down_payment < 0:
-      print("You can't have a negative down payment, shtupit!!!")
-      down_payment = int(input("Willing to spare anything upfront?: "))
+      print("LOL. Enter an amount above ZERO, cheapskate!")
+      down_payment = int(input("Willing to spare anything for down payment?: "))
+
 
      # Interest rate based on credit score (Source: FICO as of 11.17)
     if credit_score >= 760:
@@ -71,25 +72,34 @@ def estimate_mortgage_qualification():
 
     return total_mortgage
 
+
 def find_closest_median_house_price():
     """
     Find the closest match of median house price by county.
     """
-    #Calling a previosu function, since it is a part of the new function
-    totalloan = estimate_mortgage_qualification()
-    median_prices_df['Difference'] = abs(median_prices_df['Median Home Price Q1 2023'] - totalloan)
+    median_prices_df['Difference'] = abs(median_prices_df['Median Home Price Q1 2023'] - total_loan)
     closest_match = median_prices_df.loc[median_prices_df['Difference'].idxmin()]
 
     return closest_match['County Name'], closest_match['Median Home Price Q1 2023']
 
-# Example usage
-# Call the function
-result_list = find_closest_median_house_price()
-# Making each variable in the function to be called separately
-countyname = result_list[0]
-medianprice = result_list[1]
+# Adding a loop to make the code run multiple times based on the user input
+while True:
+  # Call the function
+  total_loan = estimate_mortgage_qualification()
+  result_list = find_closest_median_house_price()
 
-# Output
-print(f"\nThe bank might give you around ${totalloan}, but you will have to beg.")
-print(f"You can probably, maybe, tho unlikely afford something in {countyname}, CA.")
-print(f"The median price of the house is around ${medianprice}, tho it's too much for you anyway.")
+  # Making each variable in the function to be called separately
+  countyname = result_list[0]
+  medianprice = result_list[1]
+
+  # Output
+  print(f"\nThe bank might give you around ${total_loan}, but you will have to beg.")
+  print(f"You can probably, maybe, potentially afford something in {countyname}, CA.")
+  print(f"The median price of the house is around ${medianprice} in that county. Hopefully the crime is low around there.")
+
+  # Ask the user to run the code again
+  run_again = input("\nWanna give it another shot? (yes/no): ").lower()
+  if run_again == 'no':
+    break # Exit the loop if the user doesn't want to run again
+
+print("Happy house hunting!")
