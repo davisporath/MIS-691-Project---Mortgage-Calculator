@@ -1,7 +1,7 @@
 import pandas as pd
 
 # Load the Excel file YOU WILL NEED TO UPDATE FILE_PATH WITH YOUR FILE LOCATION
-file_path = 'TEST 2023 Median House Prices by County US AND CA (1).xlsx'
+file_path = '2023 Median House Prices by County US AND CA.xlsx'
 median_prices_df = pd.read_excel(file_path)
 
 # Display the first few rows of the DataFrame to understand its structure
